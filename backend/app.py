@@ -6,7 +6,6 @@ from flipkart_scraper import get_flipkart_reviews
 app = Flask(__name__)
 CORS(app)
 
-
 # ---------------- SMART FALLBACK ----------------
 def get_smart_fallback(url):
 
