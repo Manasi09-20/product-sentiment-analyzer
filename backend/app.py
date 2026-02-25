@@ -1,7 +1,7 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-from backend.sentiment import analyze_sentiment
-from backend.flipkart_scraper import get_flipkart_reviews
+from sentiment import analyze_sentiment
+from flipkart_scraper import get_flipkart_reviews
 import os
 
 app = Flask(__name__)
@@ -38,6 +38,7 @@ def analyze_reviews():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
+
 # ---------------- URL REVIEWS ----------------
 @app.route("/analyze-url", methods=["POST"])
 def analyze_url():
@@ -45,7 +46,13 @@ def analyze_url():
         data = request.get_json()
         url = data.get("url")
 
+        if not url:
+            return jsonify({"error": "No URL provided"}), 400
+
         reviews = get_flipkart_reviews(url)
+
+        if not reviews:
+            return jsonify({"error": "Could not fetch reviews"}), 400
 
         results = []
         summary = {"Positive": 0, "Negative": 0, "Neutral": 0}
@@ -67,7 +74,7 @@ def analyze_url():
         return jsonify({"error": str(e)}), 500
 
 
-# ---------------- RENDER PORT BINDING ----------------
+# ---------------- RENDER PORT ----------------
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 10000))
     app.run(host="0.0.0.0", port=port)
