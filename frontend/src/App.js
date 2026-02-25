@@ -5,8 +5,10 @@ import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
-function App() {
+// 🔗 Your live backend
+const API = "https://product-sentiment-analyzer-xcq0.onrender.com";
 
+function App() {
   const [text, setText] = useState("");
   const [url, setUrl] = useState("");
   const [result, setResult] = useState(null);
@@ -17,8 +19,8 @@ function App() {
     try {
       const reviews = text.split("\n");
 
-      const response = await axios.post("http://127.0.0.1:5000/analyze", {
-        reviews: reviews
+      const response = await axios.post(`${API}/analyze`, {
+        reviews: reviews,
       });
 
       setResult(null);
@@ -28,8 +30,8 @@ function App() {
         setResult(response.data.summary);
         setDetails(response.data.results);
       }, 100);
-
     } catch (error) {
+      console.error(error);
       alert("Backend error");
     }
   };
@@ -37,8 +39,8 @@ function App() {
   // URL analysis
   const analyzeURL = async () => {
     try {
-      const response = await axios.post("http://127.0.0.1:5000/analyze-url", {
-        url: url
+      const response = await axios.post(`${API}/analyze-url`, {
+        url: url,
       });
 
       setResult(null);
@@ -48,8 +50,8 @@ function App() {
         setResult(response.data.summary);
         setDetails(response.data.results);
       }, 100);
-
     } catch (error) {
+      console.error(error);
       alert("Invalid URL or backend not running");
     }
   };
@@ -60,15 +62,11 @@ function App() {
         datasets: [
           {
             label: "Sentiment Distribution",
-            data: [
-              result.Positive,
-              result.Negative,
-              result.Neutral
-            ],
+            data: [result.Positive, result.Negative, result.Neutral],
             backgroundColor: ["#4CAF50", "#F44336", "#FFC107"],
-            borderWidth: 1
-          }
-        ]
+            borderWidth: 1,
+          },
+        ],
       }
     : null;
 
@@ -84,7 +82,8 @@ function App() {
         value={url}
         onChange={(e) => setUrl(e.target.value)}
       />
-      <br /><br />
+      <br />
+      <br />
       <button onClick={analyzeURL}>Analyze URL</button>
 
       <hr style={{ margin: "40px 0" }} />
@@ -98,7 +97,8 @@ function App() {
         onChange={(e) => setText(e.target.value)}
       />
 
-      <br /><br />
+      <br />
+      <br />
       <button onClick={analyzeText}>Analyze Reviews</button>
 
       {result && (
