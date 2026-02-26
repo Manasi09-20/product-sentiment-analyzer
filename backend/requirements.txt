@@ -1,5 +1,10 @@
 flask
 flask-cors
-textblob
-selenium
 gunicorn
+requests
+beautifulsoup4
+lxml
+scikit-learn
+pandas
+numpy
+joblib
