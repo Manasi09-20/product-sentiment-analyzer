@@ -54,7 +54,7 @@ def analyze_reviews():
 @cross_origin()
 def analyze_url():
     try:
-        data = request.get_json()
+        data = request.get_json(force=True, silent=True) or {}
         url = data.get("url")
 
         if not url:
