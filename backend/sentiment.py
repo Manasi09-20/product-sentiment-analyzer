@@ -1,13 +1,22 @@
-from textblob import TextBlob
+def analyze_sentiment(text):
+    text = text.lower()
 
-def analyze_sentiment(review):
+    positive_words = ["good", "great", "excellent", "amazing", "love", "nice"]
+    negative_words = ["bad", "worst", "poor", "hate", "terrible", "awful"]
 
-    analysis = TextBlob(review)
-    polarity = analysis.sentiment.polarity
+    score = 0
 
-    if polarity > 0.1:
+    for word in positive_words:
+        if word in text:
+            score += 1
+
+    for word in negative_words:
+        if word in text:
+            score -= 1
+
+    if score > 0:
         return "Positive"
-    elif polarity < -0.1:
+    elif score < 0:
         return "Negative"
     else:
         return "Neutral"
